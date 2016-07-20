@@ -8,6 +8,7 @@
 #include "util/Direction.h"
 #include <string>
 
+
 USING_NS_CC;
 //using namespace std;
 
@@ -242,6 +243,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact &contact) {
 		a->setDynamic(true);
 		a->getNode()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener->clone(), a->getNode());
 		a->applyImpulse(Vec2(cocos2d::random(-(impulsePower), impulsePower), cocos2d::random(-150, 150)), Vec2::ZERO);
+		a->getNode()->setName("Collided_VaseElement");
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/vase_hit.wav");
 		setScore();
 		return true;
@@ -252,6 +254,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact &contact) {
 		b->setDynamic(true);
 		b->getNode()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener->clone(), b->getNode());
 		b->applyImpulse(Vec2(cocos2d::random(-(impulsePower), impulsePower), cocos2d::random(-150, 150)), Vec2::ZERO);
+		b->getNode()->setName("Collided_VaseElement");
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/vase_hit.wav");
 		setScore();
 		return true;
@@ -361,20 +364,22 @@ void GameScene::update(float dt) {
 	for (int i = 0; i < vaseList.size(); i++) {
 		if (vaseList.at(i)->getPositionX() <= 0 && !gameOverInitiated) {
 			vaseList.at(i)->getPhysicsBody()->setEnabled(false);
-		
+
 			vaseList.at(i)->setVisible(false);
-			
-			
-			/*CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/vase_fall.wav");
+			CCLOG("asdasdas");
+			CCLOG("%s", vaseList.at(i)->getName().c_str());
+			if (vaseList.at(i)->getName().find("Collided") == std::string::npos) {
+				gameOverInitiated = true;
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/vase_fall.wav");
 			UserDefault::getInstance()->setBoolForKey("game_started", true);
 			contactListener->setEnabled(false);
 			touchListener->setEnabled(false);
-		
+
 			auto scene = Popup::createScene();
 			UserDefault *def = UserDefault::getInstance();
 			int savedHighScore = def->getIntegerForKey("high_score", 0);
 			if (savedHighScore < totalScore) {
-				
+
 				auto newHighScoreLabel = Label::createWithTTF("NEW HIGH SCORE!", "fonts/Gamegirl.ttf", visibleSizeHeight * SCORE_FONT_SIZE);
 				newHighScoreLabel->setPosition(Point(visibleSizeWidth / 2, visibleSizeHeight - (newHighScoreLabel->getContentSize().height * 3)));
 				this->addChild(newHighScoreLabel);
@@ -417,7 +422,10 @@ void GameScene::update(float dt) {
 
 			auto menu = Menu::createWithArray(menuItems);
 			menu->setPosition(Point::ZERO);
-			this->addChild(menu, 1001);*/
+			this->addChild(menu, 1001);
+
+
+		}
 		}
 	}
 	kitty->Animate();
