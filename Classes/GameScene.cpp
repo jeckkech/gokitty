@@ -66,9 +66,9 @@ void GameScene::initializeManView() {
 
 	auto manSprite = Sprite::createWithSpriteFrame(cache->getSpriteFrameByName("man1.png"));
 
-	Vector<SpriteFrame*> animFrames(4);
+	Vector<SpriteFrame*> animFrames(3);
 
-	for (int i = 1; i <= 4; i++) {
+	for (int i = 1; i <= 3; i++) {
 		char str[100] = { 0 };
 		sprintf(str, "man%i.png", i);
 		auto spr = Sprite::create(str);
@@ -226,7 +226,7 @@ void GameScene::setScore() {
 	__String *tempScore = __String::createWithFormat("%i", totalScore);
 	scoreLabel->setString(tempScore->getCString());
 
-	float speedInc = (totalScore / 10 * 0.0005);
+	float speedInc = (totalScore / 15 * 0.0005);
 	if (totalScore % 10 == 0 && speedInc < COL_SPAWN_FREQUENCY) {
 		this->unschedule(schedule_selector(GameScene::SpawnCol));
 		this->schedule(schedule_selector(GameScene::SpawnCol), (COL_SPAWN_FREQUENCY - speedInc) * visibleSizeWidth);
@@ -267,16 +267,10 @@ bool GameScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
 }
 
 bool GameScene::onTouchMove(cocos2d::Touch *touch, cocos2d::Event *event) {
-	if (touch->getStartLocation().x - touch->getLocation().x > 100 && moveDirection == LEFT) {
-		this->KittyJump(0);
-	}
-	if (touch->getStartLocation().x - touch->getLocation().x < -100 && moveDirection == RIGHT) {
-		this->KittyJump(0);
-	}
-	if (touch->getStartLocation().y - touch->getLocation().y > 50 && moveDirection == DOWN) {
-		this->KittyJump(0);
-	}
-	if (touch->getStartLocation().y - touch->getLocation().y < -50 && moveDirection == UP) {
+	if ((touch->getStartLocation().x - touch->getLocation().x > 200 && abs(touch->getStartLocation().y - touch->getLocation().y) <= 100 && moveDirection == LEFT) ||
+		(touch->getStartLocation().x - touch->getLocation().x < -200 && abs(touch->getStartLocation().y - touch->getLocation().y) <= 100 && moveDirection == RIGHT) ||
+		(touch->getStartLocation().y - touch->getLocation().y > 100 && abs(touch->getStartLocation().x - touch->getLocation().x) <= 100 && moveDirection == DOWN) || 
+		(touch->getStartLocation().y - touch->getLocation().y < -100 && abs(touch->getStartLocation().x - touch->getLocation().x) <= 100 && moveDirection == UP)) {
 		this->KittyJump(0);
 	}
 }
